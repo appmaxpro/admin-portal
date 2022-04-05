@@ -4,7 +4,7 @@ abstract class EM{
 
   Future<Result<E>> get<E>(String model, GetCommand request);
   Future<ListResult<E>> all<E>(String model, [ListCommand options]);
-  Future<List<E>> getMani<E>(String model, GetManyCommand request);
+  Future<List<E>> getMany<E>(String model, GetManyCommand request);
 
   Future<Result<E>> create<E>(String model, SaveCommand request);
   Future<Result<E>> createBulk<E>(String model, SaveBulkCommand request);

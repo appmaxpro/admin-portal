@@ -2,14 +2,11 @@
 import '../resource.dart';
 
 import '../index.dart';
-import 'package:invoiceninja_flutter/utils/strings.dart';
 
-/**
- * The {@code Query} class allows filtering and fetching records quickly.
- *
- * <p>It also provides {@link #update(Map)} and {@link #delete()} method to perform mass update and
- * delete operation on matched records.
- */
+/// The {@code Query} class allows filtering and fetching records quickly.
+///
+/// <p>It also provides {@link #update(Map)} and {@link #delete()} method to perform mass update and
+/// delete operation on matched records.
 
 bool _notBlank(String st) => st != null && st.isNotEmpty;
 
@@ -82,35 +79,33 @@ class Query<T extends Model> {
     this.namedParams = namedParams;
   }
 
-  /**
-   * A convenient method to filter the query using JPQL's <i>where</i> clause.
-   *
-   * <p>The filter string should refer the field names with {@code self.} prefix and values should
-   * not be embedded into the filter string but should be passed by parameters and {@code ?}
-   * placeholder should be used to mark parameter substitutions.
-   *
-   * <p>Here is an example:
-   *
-   * <pre>
-   * Query&lt;Person&gt; query = Query.of(Person);
-   * query = query.filter(&quot;self.name = ? AND self.age &gt;= ?&quot;, &quot;some&quot;, 20);
-   *
-   * List&lt;Person&gt; matched = query.fetch();
-   * </pre>
-   *
-   * <p>This is equivalent to:
-   *
-   * <pre>
-   * SELECT self from Person self WHERE (self.name = ?1) AND (self.age &gt;= ?2)
-   * </pre>
-   *
-   * <p>The params passed will be added as positional parameters to the JPA query object before
-   * performing {@link #fetch()}.
-   *
-   * @param filter the filter string
-   * @param params the parameters
-   * @return the same instance
-   */
+  /// A convenient method to filter the query using JPQL's <i>where</i> clause.
+  ///
+  /// <p>The filter string should refer the field names with {@code self.} prefix and values should
+  /// not be embedded into the filter string but should be passed by parameters and {@code ?}
+  /// placeholder should be used to mark parameter substitutions.
+  ///
+  /// <p>Here is an example:
+  ///
+  /// <pre>
+  /// Query&lt;Person&gt; query = Query.of(Person);
+  /// query = query.filter(&quot;self.name = ? AND self.age &gt;= ?&quot;, &quot;some&quot;, 20);
+  ///
+  /// List&lt;Person&gt; matched = query.fetch();
+  /// </pre>
+  ///
+  /// <p>This is equivalent to:
+  ///
+  /// <pre>
+  /// SELECT self from Person self WHERE (self.name = ?1) AND (self.age &gt;= ?2)
+  /// </pre>
+  ///
+  /// <p>The params passed will be added as positional parameters to the JPA query object before
+  /// performing {@link #fetch()}.
+  ///
+  /// @param filter the filter string
+  /// @param params the parameters
+  /// @return the same instance
   Query<T> setFilter(String filter, [List<Object> params]) {
     if (this.filter != null) {
       throw new ArgumentError('Query is already filtered.');
@@ -136,31 +131,29 @@ class Query<T extends Model> {
   }
 
 
-  /**
-   * Set order by clause for the query. This method can be chained to provide multiple fields.
-   *
-   * <p>The {@code spec} is just a field name for {@code ASC} or should be prefixed with {@code -}
-   * for {@code DESC} clause.
-   *
-   * <p>For example:
-   *
-   * <pre>
-   * Query&lt;Person&gt; query = Query.of(Person);
-   * query = query.filter(&quot;name =&quot;, &quot;some&quot;).filter(&quot;age &gt;=&quot;, 20)
-   *        .filter(&quot;lang in&quot;, &quot;en&quot;, &quot;hi&quot;);
-   *
-   * query = query.order(&quot;name&quot;).order(&quot;-age&quot;);
-   * </pre>
-   *
-   * <p>This is equivalent to:
-   *
-   * <pre>
-   * SELECT p from Person p WHERE (p.name = ?1) AND (p.age &gt;= ?2) AND (lang IN (?3, ?4)) ORDER BY p.name, p.age DESC
-   * </pre>
-   *
-   * @param spec order spec
-   * @return the same query instance
-   */
+  /// Set order by clause for the query. This method can be chained to provide multiple fields.
+  ///
+  /// <p>The {@code spec} is just a field name for {@code ASC} or should be prefixed with {@code -}
+  /// for {@code DESC} clause.
+  ///
+  /// <p>For example:
+  ///
+  /// <pre>
+  /// Query&lt;Person&gt; query = Query.of(Person);
+  /// query = query.filter(&quot;name =&quot;, &quot;some&quot;).filter(&quot;age &gt;=&quot;, 20)
+  ///        .filter(&quot;lang in&quot;, &quot;en&quot;, &quot;hi&quot;);
+  ///
+  /// query = query.order(&quot;name&quot;).order(&quot;-age&quot;);
+  /// </pre>
+  ///
+  /// <p>This is equivalent to:
+  ///
+  /// <pre>
+  /// SELECT p from Person p WHERE (p.name = ?1) AND (p.age &gt;= ?2) AND (lang IN (?3, ?4)) ORDER BY p.name, p.age DESC
+  /// </pre>
+  ///
+  /// @param spec order spec
+  /// @return the same query instance
   Query<T> order(String spec) {
     if (orderBy.length > 0) {
       orderBy += ', ';
@@ -183,11 +176,9 @@ class Query<T extends Model> {
     return this;
   }
 
-  /**
-   * Set the query result cacheable.
-   *
-   * @return the same query instance
-   */
+  /// Set the query result cacheable.
+  ///
+  /// @return the same query instance
   Query<T> setCacheable([bool value=true]) {
     this._cacheable = value;
     return this;
@@ -196,22 +187,18 @@ class Query<T extends Model> {
   bool get cacheable => _cacheable;
 
 
-  /**
-   * Set the query readonly.
-   *
-   * @return the same query instance.
-   */
+  /// Set the query readonly.
+  ///
+  /// @return the same query instance.
   Query<T> setReadOnly([bool value=true]) {
     this.readOnly = value;
     return this;
   }
 
-  /**
-   * Set whether to use translation join.
-   *
-   * @param translate
-   * @return
-   */
+  /// Set whether to use translation join.
+  ///
+  /// @param translate
+  /// @return
   Query<T> setTranslate([bool value=true]) {
     this.translate = value;
     return this;
@@ -224,13 +211,11 @@ class Query<T extends Model> {
   }
 
 
-  /**
-   * Fetch the matched records within the given range.
-   *
-   * @param limit the limit
-   * @param offset the offset
-   * @return list of matched records within the range
-   */
+  /// Fetch the matched records within the given range.
+  ///
+  /// @param limit the limit
+  /// @param offset the offset
+  /// @return list of matched records within the range
   Future<List<T>> fetch([int limit=0, int offset=0]) {
 
     ///final TypedQuery<T> query = em().createQuery(selectQuery(), modelName);
@@ -249,21 +234,17 @@ class Query<T extends Model> {
     return Future.value([]);
   }
 
-  /**
-   * Fetch a matched record at the given offset.
-   *
-   * @param offset the offset
-   * @return the matched record at given offset
-   */
+  /// Fetch a matched record at the given offset.
+  ///
+  /// @param offset the offset
+  /// @return the matched record at given offset
   Future<T> fetchOne([int offset=0]) {
     return fetch(1, offset).then((value) => value.isNotEmpty ? value.first : null);
   }
 
-  /**
-   * Returns the number of total records matched.
-   *
-   * @return total number
-   */
+  /// Returns the number of total records matched.
+  ///
+  /// @return total number
   Future<int> count() {
     String countQuery = this.countQuery();
     int result = 0;
@@ -273,26 +254,22 @@ class Query<T extends Model> {
     return Future.value(result);
   }
 
-  /**
-   * Return a selector to select records with specific fields only.
-   *
-   * @param names field names to select
-   * @return a new instance of {@link Selector}
-   */
+  /// Return a selector to select records with specific fields only.
+  ///
+  /// @param names field names to select
+  /// @return a new instance of {@link Selector}
   Selector select(List<String> names) {
     return new Selector(names, this);
   }
 
-  /**
-   * Perform mass update on matched records with the given values.
-   *
-   * <p>If <code>updatedBy</code> user is null, perform non-versioned update otherwise performed
-   * versioned update.
-   *
-   * @param values the key value map
-   * @param updatedBy the user to set 'updatedBy' field
-   * @return total number of records updated
-   */
+  /// Perform mass update on matched records with the given values.
+  ///
+  /// <p>If <code>updatedBy</code> user is null, perform non-versioned update otherwise performed
+  /// versioned update.
+  ///
+  /// @param values the key value map
+  /// @param updatedBy the user to set 'updatedBy' field
+  /// @return total number of records updated
   int update(Map<String, Object> values, [dynamic updatedBy]) {
     if (values == null || values.isEmpty) {
       return 0;
@@ -378,15 +355,13 @@ class Query<T extends Model> {
     return count;
   }
 
-  /**
-   * Bulk delete all the matched records. <br>
-   * <br>
-   * This method uses <code>DELETE</code> query and performs {@link
-   * javax.persistence.Query#executeUpdate()}.
-   *
-   * @see #remove()
-   * @return total number of records affected.
-   */
+  /// Bulk delete all the matched records. <br>
+  /// <br>
+  /// This method uses <code>DELETE</code> query and performs {@link
+  /// javax.persistence.Query#executeUpdate()}.
+  ///
+  /// @see #remove()
+  /// @return total number of records affected.
   int delete() {
     bool notMySQL = true;//!DBHelper.isMySQL();
     String selectQuery = this.selectQuery(true)
@@ -425,15 +400,13 @@ class Query<T extends Model> {
     return count;
   }
 
-  /**
-   * Remove all the matched records. <br>
-   * <br>
-   * In contrast to the {@link #delete()} method, it performs {@link EntityManager#remove(Object)}
-   * operation by fetching objects in pages (100 at a time).
-   *
-   * @see #delete()
-   * @return total number of records removed.
-   */
+  /// Remove all the matched records. <br>
+  /// <br>
+  /// In contrast to the {@link #delete()} method, it performs {@link EntityManager#remove(Object)}
+  /// operation by fetching objects in pages (100 at a time).
+  ///
+  /// @see #delete()
+  /// @return total number of records removed.
   int remove() {
     return 0;
   }
@@ -499,13 +472,11 @@ class Query<T extends Model> {
 
    */
 
-  /**
-   * Bind the named parameters of the query with the given values. Named parameter must me set after
-   * query is filtered.
-   * Bind the given named parameter of the query with the given value.
-   * @param params mapping for named params.
-   * @return the same instance
-   */
+  /// Bind the named parameters of the query with the given values. Named parameter must me set after
+  /// query is filtered.
+  /// Bind the given named parameter of the query with the given value.
+  /// @param params mapping for named params.
+  /// @return the same instance
   Query<T> bind([Map<String, Object> params, String name, Object value]) {
     if (namedParams == null) {
       namedParams = {};
@@ -772,16 +743,14 @@ class JoinHelper {
 
     JoinHelper(this.modelName) ;
 
-    /**
-     * Parse the given filter string and return transformed filter expression.
-     *
-     * <p>Automatically calculate <code>LEFT JOIN</code> for association path expressions and the
-     * path expressions are replaced with the join variables.
-     *
-     * @param filter the filter expression
-     * @param translate whether to generate translation join
-     * @return the transformed filter expression
-     */
+    /// Parse the given filter string and return transformed filter expression.
+    ///
+    /// <p>Automatically calculate <code>LEFT JOIN</code> for association path expressions and the
+    /// path expressions are replaced with the join variables.
+    ///
+    /// @param filter the filter expression
+    /// @param translate whether to generate translation join
+    /// @return the transformed filter expression
     String parse(String filter, bool translate) {
 
       String result = '';
@@ -800,15 +769,13 @@ class JoinHelper {
       return result;
     }
 
-    /**
-     * Automatically generate <code>LEFT JOIN</code> for the given name (association path
-     * expression) and return the join variable.
-     *
-     * @param name the path expression or field name
-     * @param fetch whether to generate fetch join
-     * @param translate whether to generate translation join
-     * @return join variable if join is created else returns name
-     */
+    /// Automatically generate <code>LEFT JOIN</code> for the given name (association path
+    /// expression) and return the join variable.
+    ///
+    /// @param name the path expression or field name
+    /// @param fetch whether to generate fetch join
+    /// @param translate whether to generate translation join
+    /// @return join variable if join is created else returns name
     String joinName(String name, [bool fetch=false, bool translate=false]) {
       final Mapper mapper = Mapper.of(modelName);
       final List<String> path = name.split('\\.');

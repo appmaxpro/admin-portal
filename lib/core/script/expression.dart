@@ -102,7 +102,7 @@ class MapEvaluationContext extends EvaluationContext {
 
   @override
   Object get(String name) {
-    return data[name]?? data.containsKey(name)? null : parent?.get(name);
+    return data.containsKey(name)? data[name] : parent?.get(name);
   }
 
   @override
@@ -223,7 +223,7 @@ class ExpressionParser {
         r = MemberExpression(r, tokens[i+1], memberValueGetter)..expressionParser = this;
         i++;
       }else{
-        throw new Exception("invalid token type in member expression");
+        throw new Exception("invalid token type in member expression: $token");
       }
     }
     return r;
@@ -277,6 +277,7 @@ class MemberExpression extends QuickExpression {
   QuickExpression caller;
   IdentityToken memberToken;
   MemberValueGetter memberValueGetter;
+  QuickExpression setter;
 
   MemberExpression(this.caller, this.memberToken, this.memberValueGetter);
 
@@ -284,6 +285,9 @@ class MemberExpression extends QuickExpression {
   Object evaluate(EvaluationContext context) {
     var v = caller.evaluate(context);
     if(v is Map){
+      if (setter != null){
+        v[memberToken.toCodeString()] = setter.evaluate(context);
+      }
       return v[memberToken.toCodeString()];
     }else {
       return memberValueGetter.getMemberValue(v, memberToken.toCodeString());
@@ -360,6 +364,14 @@ class BinaryExpression extends QuickExpression {
 
   @override
   Object evaluate(EvaluationContext context) {
+
+    if (operatorToken.toCodeString() == '=' && left is MemberExpression){
+      (left as MemberExpression).setter = right;
+      print("Right: $right: ${right.runtimeType}");
+
+      return left.evaluate(context);
+    }
+
     var leftvalue = left.evaluate(context);
     var rightvalue = right.evaluate(context);
     var r = calculate(leftvalue, rightvalue, operatorToken.toCodeString());
@@ -428,6 +440,7 @@ class DelegateExpression extends QuickExpression {
   @override
   Object evaluate(EvaluationContext context) {
     //context.evaluate
+    return null;
   }
 
   @override
@@ -472,5 +485,35 @@ class LoopExpression extends QuickExpression {
     return '#for ($asName in ${list.toCodeString()}) \n ${body.toCodeString()}'
         '#else\n${elseToken?.toCodeString()??""}';
   }
+}
+
+dynamic main(List<String> args) async {
+  final map = <dynamic,dynamic>{};
+  MapEvaluationContext context = MapEvaluationContext(data:{
+    "a": 2,
+    "b": 3,
+    "c": 4,
+    "d": {
+      "e":{
+        "f": (dynamic t)=>3+t
+      },
+      "add": (dynamic a, dynamic b)=> a+b
+    },
+    'data': map
+  });
+
+  String expstr = "a+b*(c+2*3-d.e.f(1)+(6/(3+d.add(2,1))))/a+b";
+  ExpressionParser parser = new ExpressionParser(null);
+  var expression = parser.parseExpressionText(expstr);
+  var r = expression.evaluate(context);
+  print(r);
+
+  expstr = "data.aaa = 77666;";
+
+  parser = new ExpressionParser(null);
+  expression = parser.parseExpressionText(expstr);
+  r = expression.evaluate(context);
+  print(r);
+  print(map);
 }
 

@@ -10,10 +10,10 @@ const Meta _DEFAULT_META = const MetaField<dynamic,dynamic>(props: _DEFAULT_PROP
 typedef SelectionFn = Future<List<Enum>> Function([Record record]);
 
 class Enum {
-  Enum(this.key, this.label);
+  Enum(this.value, this.label);
 
   final String label;
-  final dynamic key;
+  final dynamic value;
 }
 
 abstract class Field<T, V>{
@@ -32,12 +32,20 @@ abstract class Field<T, V>{
     return identical(other, this);
   }
 
+  void init(){
+
+  }
+
 }
 
 abstract class Relation {
   String get target;
   String get mappedBy;
   bool get orphan;
+}
+
+class FieldProps {
+
 }
 
 abstract class Fields<T, V> {
